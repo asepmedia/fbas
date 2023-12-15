@@ -1,9 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:latihan_fbase/pages/dashboard_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _emailC = TextEditingController();
+
+  final _passwordC = TextEditingController();
+
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +72,7 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 70),
                 TextField(
+                  controller: _emailC,
                   onSubmitted: (value) {},
                   onTap: () {},
                   decoration: InputDecoration(
@@ -90,8 +103,10 @@ class LoginPage extends StatelessWidget {
                 // ),
                 // const SizedBox(height: 5),
                 TextField(
+                  controller: _passwordC,
                   onSubmitted: (value) {},
                   onTap: () {},
+                  obscureText: true,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 12, horizontal: 20),
@@ -117,23 +132,58 @@ class LoginPage extends StatelessWidget {
                 ButtonWidget(
                   height: 40,
                   onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+
                     var db = FirebaseFirestore.instance;
-                    // await db.collection('users').add({
-                    //   'name': 'Asep',
-                    //   'email': 'asep@gmail.com',
-                    //   'password': '123456',
-                    // });
-                    var data = db.collection('users').where({
-                      'email': 'asep@gmail.com',
-                      'password': '123456',
-                    }).count();
-                    print(data);
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const DashboardPage()),
-                    // );
+
+                    try {
+                      var data = await db
+                          .collection('users')
+                          .where('email', isEqualTo: _emailC.text)
+                          .where('password', isEqualTo: _passwordC.text)
+                          .get();
+
+                      if (data.docs.first.exists) {
+                        const snackBar = SnackBar(
+                          content: Text('Berhasil Login'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        _emailC.clear();
+                        _passwordC.clear();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => const DashboardPage()),
+                        );
+                      } else {
+                        const snackBar = SnackBar(
+                          content: Text('User tidak ditemukan'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    } catch (e) {
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      const snackBar = SnackBar(
+                        content: Text('User tidak ditemukan'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
                   },
-                  child: const Text('Masuk'),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('Login'),
                 )
               ],
             ),
