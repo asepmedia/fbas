@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "373993426080",
+    "project_id": "latihan-fbase",
+    "storage_bucket": "latihan-fbase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373993426080:android:8294a8ed03d046553f4dc5",
+        "android_client_info": {
+          "package_name": "com.example.latihan_fbase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE8zgYCogiJxlQoGsQtRjJSGao0tL2_kw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
