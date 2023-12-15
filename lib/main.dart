@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan_fbase/firebase_options.dart';
+import 'package:latihan_fbase/pages/onboarding_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,19 +19,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1B55C2)),
+        primaryColor: const Color(0xFF1B55C2),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const OnboardingPage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
   final String title;
+
+  const MyHomePage({super.key, required this.title});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -39,12 +42,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final controller = TextEditingController();
   int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 controller: controller,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Nama',
                 ),
@@ -86,12 +83,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller.clear();
                   print(data.docs);
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Berhasil ditambahkan")));
+                      const SnackBar(content: Text("Berhasil ditambahkan")));
                 },
                 child: const Text('Submit')),
           ],
         ),
       ),
     );
+  }
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
   }
 }
