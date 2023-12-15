@@ -4,7 +4,8 @@
         android:label="latihan_fbase"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        
+          <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyCa7x0iAavAvwla2CiiYN_rkI2h1ZWsn0w"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:latihan_fbase/pages/login_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -35,14 +35,17 @@ class OnboardingPage extends StatelessWidget {
                 ),
                 ButtonWidget(
                   onPressed: () async {
-                    var db = FirebaseFirestore.instance;
-                    await db.collection('users').add({
-                      'name': 'Asep',
-                      'email': 'asep@gmail.com',
-                      'password': '123456',
-                    });
-                    var data = await db.collection('users').get();
-                    print(data.docs);
+                    // var db = FirebaseFirestore.instance;
+                    // await db.collection('users').add({
+                    //   'name': 'Asep',
+                    //   'email': 'asep@gmail.com',
+                    //   'password': '123456',
+                    // });
+                    // var data = await db.collection('users').get();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
                   },
                   child: const Text('Mulai'),
                 )
