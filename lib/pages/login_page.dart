@@ -41,10 +41,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void firebaseSignin() async {
+  Future<void> firebaseSignin() async {
     String email = EmailController.text;
     String password = PasswordController.text;
 
+    setState(() {
+      _isLoading = true;
+    });
     try {
       User? user = await _authServ.signIn(email, password);
       if (user != null) {
@@ -56,8 +59,14 @@ class _LoginPageState extends State<LoginPage> {
       else {
         showLoginAlertMsg("Login credentials not found");
       }
+      setState(() {
+        _isLoading = false;
+      });
     } on String catch (e) {
       showLoginAlertMsg(e);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -186,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                 ButtonWidget(
                   height: 40,
                   onPressed: () async {
-                    firebaseSignin();
+                    await firebaseSignin();
                   },
                   child: _isLoading
                       ? const SizedBox(
