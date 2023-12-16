@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan_fbase/pages/dashboard_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../firebase_auth_serv.dart';
+import 'dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,11 +14,52 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailC = TextEditingController();
-
-  final _passwordC = TextEditingController();
-
   bool _isLoading = false;
+  final FirebaseAuthServ _authServ = FirebaseAuthServ();
+
+  final _formKey = GlobalKey<FormState>();
+  final EmailController = TextEditingController();
+  final PasswordController = TextEditingController();
+
+  void showLoginAlertMsg(final String msg) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Login error"),
+          content: Text(msg),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("RETURN"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void firebaseSignin() async {
+    String email = EmailController.text;
+    String password = PasswordController.text;
+
+    try {
+      User? user = await _authServ.signIn(email, password);
+      if (user != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
+        );
+      }
+      else {
+        showLoginAlertMsg("Login credentials not found");
+      }
+    } on String catch (e) {
+      showLoginAlertMsg(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +115,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 const SizedBox(height: 70),
-                TextField(
-                  controller: _emailC,
-                  onSubmitted: (value) {},
-                  onTap: () {},
+                TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: EmailController,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 12, horizontal: 20),
@@ -95,6 +138,12 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Kolom email kosong";
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 15),
                 // const Text(
@@ -102,10 +151,8 @@ class _LoginPageState extends State<LoginPage> {
                 //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 // ),
                 // const SizedBox(height: 5),
-                TextField(
-                  controller: _passwordC,
-                  onSubmitted: (value) {},
-                  onTap: () {},
+                TextFormField(
+                  keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
@@ -127,53 +174,19 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
+                  controller: PasswordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Kolom password kosong";
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 ButtonWidget(
                   height: 40,
                   onPressed: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-
-                    var db = FirebaseFirestore.instance;
-
-                    try {
-                      var data = await db
-                          .collection('users')
-                          .where('email', isEqualTo: _emailC.text)
-                          .where('password', isEqualTo: _passwordC.text)
-                          .get();
-
-                      if (data.docs.first.exists) {
-                        const snackBar = SnackBar(
-                          content: Text('Berhasil Login'),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        _emailC.clear();
-                        _passwordC.clear();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const DashboardPage()),
-                        );
-                      } else {
-                        const snackBar = SnackBar(
-                          content: Text('User tidak ditemukan'),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      }
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    } catch (e) {
-                      setState(() {
-                        _isLoading = false;
-                      });
-                      const snackBar = SnackBar(
-                        content: Text('User tidak ditemukan'),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
+                    firebaseSignin();
                   },
                   child: _isLoading
                       ? const SizedBox(
