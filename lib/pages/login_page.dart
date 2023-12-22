@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:latihan_fbase/pages/admin/admin_dashboard_page.dart';
 import 'package:latihan_fbase/pages/dashboard_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,12 +28,19 @@ class _LoginPageState extends State<LoginPage> {
           title: const Text("Login error"),
           content: Text(msg),
           actions: <Widget>[
-            TextButton(
-              child: const Text("RETURN"),
+            // TextButton(
+            //   child: const Text("RETURN"),
+            //   onPressed: () {
+            //     Navigator.of(context).pop();
+            //   },
+            // ),
+            ButtonWidget(
+              height: 40,
               onPressed: () {
                 Navigator.of(context).pop();
               },
-            ),
+              child: const Text('Try again'),
+            )
           ],
         );
       },
@@ -49,12 +57,18 @@ class _LoginPageState extends State<LoginPage> {
     try {
       User? user = await _authServ.signIn(email, password);
       if (user != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const DashboardPage()),
-        );
-      }
-      else {
+        if (email == 'admin@admin.com') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AdminDashboardPage()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardPage()),
+          );
+        }
+      } else {
         showLoginAlertMsg("Login credentials not found");
       }
       setState(() {

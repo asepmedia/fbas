@@ -14,7 +14,7 @@ class DashboardPage extends StatefulWidget {
 class DashboardPageState extends State<DashboardPage> {
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(-6.242638190510166, 106.84342457481368),
-    zoom: 40.4746,
+    zoom: 20.4746,
   );
 
   static const CameraPosition _kLake = CameraPosition(
@@ -156,15 +156,15 @@ class DashboardPageState extends State<DashboardPage> {
                           items: const <BottomNavigationBarItem>[
                             BottomNavigationBarItem(
                               icon: Icon(Icons.home),
-                              label: 'Home',
+                              label: 'Layanan',
                             ),
-                            BottomNavigationBarItem(
-                              icon: Icon(Icons.call),
-                              label: 'Call',
-                            ),
+                            // BottomNavigationBarItem(
+                            //   icon: Icon(Icons.call),
+                            //   label: 'Call',
+                            // ),
                             BottomNavigationBarItem(
                               icon: Icon(Icons.star),
-                              label: 'Favorite',
+                              label: 'Favorit',
                             ),
                           ],
                           currentIndex: _currentIndex,
