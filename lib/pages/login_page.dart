@@ -4,7 +4,6 @@ import 'package:latihan_fbase/pages/dashboard_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_auth_serv.dart';
-import 'dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,9 +16,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   final FirebaseAuthServ _authServ = FirebaseAuthServ();
 
-  final _formKey = GlobalKey<FormState>();
-  final EmailController = TextEditingController();
-  final PasswordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   void showLoginAlertMsg(final String msg) {
     showDialog(
@@ -42,8 +40,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> firebaseSignin() async {
-    String email = EmailController.text;
-    String password = PasswordController.text;
+    String email = emailController.text;
+    String password = passwordController.text;
 
     setState(() {
       _isLoading = true;
@@ -126,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 70),
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
-                  controller: EmailController,
+                  controller: emailController,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 12, horizontal: 20),
@@ -183,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  controller: PasswordController,
+                  controller: passwordController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Kolom password kosong";
