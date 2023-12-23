@@ -8,13 +8,19 @@ class FirebaseAuthServ {
         password: pwd,
       );
       return credential.user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw "User not found!";
-      } else if (e.code == 'wrong-password') {
-        throw "Wrong password!";
-      }
+    } on FirebaseAuthException {
+      rethrow;
     }
-    return null;
+  }
+  Future<User?> signUp(String email, String pwd) async {
+    try {
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: pwd,
+      );
+      return credential.user;
+    } on FirebaseAuthException {
+      rethrow;
+    }
   }
 }

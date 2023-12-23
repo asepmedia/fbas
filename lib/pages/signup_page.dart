@@ -1,53 +1,45 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:latihan_fbase/pages/admin/admin_dashboard_page.dart';
 import 'package:latihan_fbase/pages/dashboard_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_auth_serv.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   bool _isLoading = false;
   final FirebaseAuthServ _authServ = FirebaseAuthServ();
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void showLoginAlertMsg(final String msg) {
+  void showSignupAlertMsg(final String msg) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Login error"),
+          title: const Text("Sign-up error"),
           content: Text(msg),
           actions: <Widget>[
-            // TextButton(
-            //   child: const Text("RETURN"),
-            //   onPressed: () {
-            //     Navigator.of(context).pop();
-            //   },
-            // ),
             ButtonWidget(
-              height: 40,
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Try again'),
-            )
+              child: const Text('Return'),
+            ),
           ],
         );
       },
     );
   }
 
-  Future<void> firebaseSignin() async {
+  Future<void> firebaseSignup() async {
     String email = emailController.text;
     String password = passwordController.text;
 
@@ -55,38 +47,25 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
     try {
-      User? user = await _authServ.signIn(email, password);
+      User? user = await _authServ.signUp(email, password);
       if (user != null) {
-        if (email == 'admin@admin.com') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AdminDashboardPage()),
-          );
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DashboardPage()),
-          );
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
+        );
       }
       setState(() {
         _isLoading = false;
       });
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'wrong-password') {
-        showLoginAlertMsg("Incorrect password. Try again.");
-      }
-      else if (e.code == 'user-not-found') {
-        showLoginAlertMsg("User not found; have you signed up?");
+      if (e.code == 'email-already-in-use') {
+        showSignupAlertMsg("E-mail already registered. Please log in instead.");
       }
       else if (e.code == 'invalid-email') {
-        showLoginAlertMsg("Invalid e-mail address. Try again.");
-      }
-      else if (e.code == 'invalid-credential') {
-        showLoginAlertMsg("Invalid credentials. Try again.");
+        showSignupAlertMsg("Invalid e-mail address. Try again.");
       }
       else {
-        showLoginAlertMsg(e.toString());
+        showSignupAlertMsg(e.toString());
       }
       setState(() {
         _isLoading = false;
@@ -219,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                 ButtonWidget(
                   height: 40,
                   onPressed: () async {
-                    await firebaseSignin();
+                    await firebaseSignup();
                   },
                   child: _isLoading
                       ? const SizedBox(
@@ -229,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text('Login'),
+                      : const Text('Sign up'),
                 )
               ],
             ),

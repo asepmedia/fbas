@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latihan_fbase/pages/login_page.dart';
+import 'package:latihan_fbase/pages/signup_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -54,16 +55,25 @@ class OnboardingPage extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        Text('Tidak punya akun? '),
-                        Text(
-                          'Daftar Akun Baru',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor),
-                        )
-                      ],
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignupPage()),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Text('Tidak punya akun? '),
+                          Text(
+                            'Daftar Akun Baru',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 )
