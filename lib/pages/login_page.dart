@@ -68,14 +68,26 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (context) => const DashboardPage()),
           );
         }
-      } else {
-        showLoginAlertMsg("Login credentials not found");
       }
       setState(() {
         _isLoading = false;
       });
-    } on String catch (e) {
-      showLoginAlertMsg(e);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        showLoginAlertMsg("Incorrect password. Try again.");
+      }
+      else if (e.code == 'user-not-found') {
+        showLoginAlertMsg("User not found; have you signed up?");
+      }
+      else if (e.code == 'invalid-email') {
+        showLoginAlertMsg("Invalid e-mail address. Try again.");
+      }
+      else if (e.code == 'invalid-credential') {
+        showLoginAlertMsg("Invalid credentials. Try again.");
+      }
+      else {
+        showLoginAlertMsg(e.toString());
+      }
       setState(() {
         _isLoading = false;
       });

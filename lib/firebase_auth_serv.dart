@@ -8,13 +8,8 @@ class FirebaseAuthServ {
         password: pwd,
       );
       return credential.user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw "User not found!";
-      } else if (e.code == 'wrong-password') {
-        throw "Wrong password!";
-      }
+    } on FirebaseAuthException {
+      rethrow;
     }
-    return null;
   }
 }
