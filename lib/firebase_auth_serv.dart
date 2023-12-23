@@ -12,4 +12,15 @@ class FirebaseAuthServ {
       rethrow;
     }
   }
+  Future<User?> signUp(String email, String pwd) async {
+    try {
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: pwd,
+      );
+      return credential.user;
+    } on FirebaseAuthException {
+      rethrow;
+    }
+  }
 }

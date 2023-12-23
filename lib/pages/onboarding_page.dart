@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latihan_fbase/pages/login_page.dart';
+import 'package:latihan_fbase/pages/signup_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -48,7 +49,8 @@ class OnboardingPage extends StatelessWidget {
                     );
                   },
                   child: const Text('Mulai'),
-                )
+                ),
+                // TODO: Make link to sign-up page
               ],
             ),
           ),
