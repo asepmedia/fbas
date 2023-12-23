@@ -33,21 +33,39 @@ class OnboardingPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                ButtonWidget(
-                  onPressed: () async {
-                    // var db = FirebaseFirestore.instance;
-                    // await db.collection('users').add({
-                    //   'name': 'Asep',
-                    //   'email': 'asep@gmail.com',
-                    //   'password': '123456',
-                    // });
-                    // var data = await db.collection('users').get();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()),
-                    );
-                  },
-                  child: const Text('Mulai'),
+                Column(
+                  children: [
+                    ButtonWidget(
+                      onPressed: () async {
+                        // var db = FirebaseFirestore.instance;
+                        // await db.collection('users').add({
+                        //   'name': 'Asep',
+                        //   'email': 'asep@gmail.com',
+                        //   'password': '123456',
+                        // });
+                        // var data = await db.collection('users').get();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
+                      },
+                      child: const Text('Mulai'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Text('Tidak punya akun? '),
+                        Text(
+                          'Daftar Akun Baru',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor),
+                        )
+                      ],
+                    )
+                  ],
                 )
               ],
             ),
