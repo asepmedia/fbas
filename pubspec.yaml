@@ -39,6 +39,7 @@ dependencies:
   google_maps_flutter: ^2.5.0
   firebase_auth: ^4.15.3
   getwidget: ^4.0.0
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

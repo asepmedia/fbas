@@ -1,6 +1,7 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan_fbase/pages/dashboard_page.dart';
+import 'package:latihan_fbase/pages/login_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_auth_serv.dart';
@@ -60,11 +61,9 @@ class _SignupPageState extends State<SignupPage> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         showSignupAlertMsg("E-mail already registered. Please log in instead.");
-      }
-      else if (e.code == 'invalid-email') {
+      } else if (e.code == 'invalid-email') {
         showSignupAlertMsg("Invalid e-mail address. Try again.");
-      }
-      else {
+      } else {
         showSignupAlertMsg(e.toString());
       }
       setState(() {
@@ -208,7 +207,31 @@ class _SignupPageState extends State<SignupPage> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text('Sign up'),
+                      : const Text('Daftar'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Sudah punya akun? '),
+                      Text(
+                        'Masuk',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan_fbase/pages/admin/admin_dashboard_page.dart';
 import 'package:latihan_fbase/pages/dashboard_page.dart';
+import 'package:latihan_fbase/pages/signup_page.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_auth_serv.dart';
@@ -75,17 +76,13 @@ class _LoginPageState extends State<LoginPage> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password') {
         showLoginAlertMsg("Incorrect password. Try again.");
-      }
-      else if (e.code == 'user-not-found') {
+      } else if (e.code == 'user-not-found') {
         showLoginAlertMsg("User not found; have you signed up?");
-      }
-      else if (e.code == 'invalid-email') {
+      } else if (e.code == 'invalid-email') {
         showLoginAlertMsg("Invalid e-mail address. Try again.");
-      }
-      else if (e.code == 'invalid-credential') {
+      } else if (e.code == 'invalid-credential') {
         showLoginAlertMsg("Invalid credentials. Try again.");
-      }
-      else {
+      } else {
         showLoginAlertMsg(e.toString());
       }
       setState(() {
@@ -229,7 +226,31 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text('Login'),
+                      : const Text('Masuk'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignupPage()),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Tidak punya akun? '),
+                      Text(
+                        'Daftar Akun Baru',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),

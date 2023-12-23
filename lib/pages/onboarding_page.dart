@@ -64,6 +64,7 @@ class OnboardingPage extends StatelessWidget {
                         );
                       },
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text('Tidak punya akun? '),
                           Text(
