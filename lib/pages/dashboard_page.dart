@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
@@ -27,21 +28,95 @@ class DashboardPageState extends State<DashboardPage> {
       Completer<GoogleMapController>();
 
   int _currentIndex = 0;
+  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
+
+  void addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(), "assets/image/pin4.png")
+        .then(
+      (icon) {
+        setState(() {
+          markerIcon = icon;
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            mapType: MapType.terrain,
-            trafficEnabled: true,
-            initialCameraPosition: _kGooglePlex,
-            zoomControlsEnabled: false,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-          ),
+          FutureBuilder(
+              future: _getServices(),
+              builder: (BuildContext context, snapshot) {
+                if (snapshot.hasData) {
+                  var data = snapshot.data
+                      as List<QueryDocumentSnapshot<Map<String, dynamic>>>;
+                  return GoogleMap(
+                    mapType: MapType.terrain,
+                    trafficEnabled: true,
+                    initialCameraPosition: _kGooglePlex,
+                    zoomControlsEnabled: false,
+                    markers: {
+                      for (var item in data)
+                        Marker(
+                          markerId: MarkerId(item.id),
+                          position: LatLng(item.data()['location'].latitude,
+                              item.data()['location'].longitude),
+                          infoWindow: InfoWindow(
+                            title: item.data()['name'],
+                            // snippet: item.data()['address'],
+                          ),
+                          icon: markerIcon,
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Detail Layanan",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          item.data()['name'],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 18),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          item.data()['address'],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                        )
+                    },
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              }),
           Align(
             alignment: Alignment.topCenter,
             child: Container(
@@ -183,5 +258,18 @@ class DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    addCustomIcon();
+    super.initState();
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      _getServices() async {
+    var db = await FirebaseFirestore.instance.collection("services").get();
+
+    return db.docs;
   }
 }
