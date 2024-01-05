@@ -74,6 +74,7 @@ class DashboardPageState extends State<DashboardPage> {
                                 context: context,
                                 builder: (context) {
                                   return Container(
+                                    width: double.infinity,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 20),
                                     child: Column(
