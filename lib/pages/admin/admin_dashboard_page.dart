@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:latihan_fbase/pages/login_page.dart';
+import 'package:latihan_fbase/widgets/add_lokasi_widget.dart';
 import 'package:latihan_fbase/widgets/button_widget.dart';
 
 class AdminDashboardPage extends StatefulWidget {
@@ -13,6 +14,46 @@ class AdminDashboardPage extends StatefulWidget {
 
   @override
   State<AdminDashboardPage> createState() => _AdminDashboardPageState();
+}
+
+class BadgeWidget extends StatelessWidget {
+  bool isActive = false;
+  String label = "Rumah Sakit";
+  BadgeWidget({
+    super.key,
+    this.isActive = false,
+    this.label = "Rumah Sakit",
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isActive) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Theme.of(context).primaryColor)),
+        child: Text(
+          label,
+          style:
+              const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey.shade300)),
+      child: Text(
+        label,
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
+    );
+  }
 }
 
 class InputWidget extends StatelessWidget {
@@ -82,6 +123,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   late LatLng _selectedLocation;
   late dynamic _selectedAddress;
+  String jenisLayanan = "Rumah Sakit";
   LatLng _markerPosition = const LatLng(-6.242638190510166, 106.84342457481368);
 
   final TextEditingController _serviceNameC = TextEditingController();
@@ -335,88 +377,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   void setSelectedLocation(LatLng latLng) {
-    setState(() {
-      _selectedLocation = latLng;
-    });
     getAddressByCoordinate(latLng);
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Tambah Layanan",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.greenAccent.shade100,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        "Silakan drag & drop marker pada map untuk menentukan lokasi",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.green.shade900),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    InputWidget(
-                      label: "Nama Layanan",
-                      controller: _serviceNameC,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    InputWidget(
-                      label: "Alamat",
-                      maxLines: 2,
-                      controller: _addressC,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Latitude: ${_selectedLocation.latitude}"),
-                        Text("Longitude: ${_selectedLocation.longitude}")
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ButtonWidget(
-                      height: 40,
-                      child: const Text("Tambah Lokasi"),
-                      onPressed: () async {
-                        var db = FirebaseFirestore.instance;
-                        db.collection("services").add({
-                          "name": _serviceNameC.text,
-                          "address": _addressC.text,
-                          "location": GeoPoint(_selectedLocation.latitude,
-                              _selectedLocation.longitude)
-                        });
-                        showLoginAlertMsg(
-                            "Sukses", "Lokasi berhasil ditambahkan");
-                      },
-                    )
-                  ],
-                )
-              ],
-            ),
+          return AddLokasiWidget(
+            selectedLocation: latLng,
           );
         });
   }
