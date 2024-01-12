@@ -117,7 +117,9 @@ class DashboardPageState extends State<DashboardPage> {
                                                   fontSize: 20),
                                             ),
                                             const SizedBox(height: 10),
-                                            Image.network(item.data()['image']),
+                                            if (item.data()['image'] != null)
+                                              Image.network(
+                                                  item.data()['image']),
                                             const SizedBox(height: 10),
                                             const Text(
                                               "Layanan",
@@ -135,6 +137,32 @@ class DashboardPageState extends State<DashboardPage> {
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 18),
                                             ),
+                                            if (item.data()['phone'] != null)
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 15),
+                                                  const Text(
+                                                    "Kontak",
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.black87),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    item.data()['phone'],
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize: 18),
+                                                  ),
+                                                ],
+                                              ),
                                             if (item.data()['description'] !=
                                                 null)
                                               Column(
